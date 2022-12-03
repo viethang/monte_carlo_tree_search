@@ -125,8 +125,8 @@ class MonteCarloTreeSearchNode:
     return self._children[np.argmax(child_scores)]
 
 class MCTS:
-  def play(self, state: MTState):
+  def play(self, state: MTState, simulation_nb = 100) -> MonteCarloTreeSearchNode :
     root = MonteCarloTreeSearchNode(state)
-    selected_node = root.best_action(100)
+    selected_node = root.best_action(simulation_nb)
     return selected_node
 
