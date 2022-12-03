@@ -125,6 +125,6 @@ class MonteCarloTreeSearchNode:
 class MCTS:
   def play(self, state: MTState):
     root = MonteCarloTreeSearchNode(state)
-    selected_node = root.best_action(20)
+    selected_node = root.best_action(100)
     return selected_node
 

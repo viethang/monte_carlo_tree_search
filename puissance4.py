@@ -21,7 +21,7 @@ class Puissance4State(MTState):
     s = ''
     for i in range(height):
       for j in range(width):
-        el = self.__state[height - i - 1][j]
+        el = self.__state[i][j]
         s += map[el] + ' '
       s += '\n'
     return s
@@ -39,7 +39,7 @@ class Puissance4State(MTState):
 
     # vertical check
     for j in range(width):
-      for i in range(height - target):
+      for i in range(height - target + 1):
         unique = np.unique([state[i+k][j] for k in range(4)])
         if len(unique) == 1 and unique[0] != 0:
           return unique[0]
@@ -57,7 +57,7 @@ class Puissance4State(MTState):
         unique = np.unique([state[i-k][j-k] for k in range(target)])
         if len(unique) == 1 and unique[0] != 0:
           return unique[0]
-    
+
     return result
 
   def is_terminal_state(self) -> bool:
@@ -75,19 +75,25 @@ class Puissance4State(MTState):
     res = []
     for i in range(height):
       for j in range(height):
-        if self.__state[i][j] == 0 and (i == 0 or self.__state[i-1][j] != 0):
+        if self.__state[i][j] == 0 and (i == height - 1 or self.__state[i+1][j] != 0):
           res.append((i, j))
     return res
+
+  def is_legal_action(self, action: list[int, int]) -> bool:
+    row = action[0]
+    col = action[1]
+    return self.__state[row][col] == 0 and (row == height - 1 or self.__state[row + 1][col] != 0)
 
 
 def main():
   game_state = Puissance4State(np.array([
-    [1, -1, 1, -1,0,0,0],
-    [1, -1, -1, 1,0,0,0],
-    [-1, -1, 1, 1, 0,0,0],
-    [0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0]
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [1, -1, 1, -1, 0, 0, 0],
+      [1, -1, -1, 1, 0, 0, 0],
+      [-1, -1, 1, 1, 0, 0, 0]
+
   ]))
   # game_state = Puissance4State(np.array([
   #   [1, -1, 1, -1,0,0,0],
