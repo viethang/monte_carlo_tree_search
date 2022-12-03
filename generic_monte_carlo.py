@@ -59,7 +59,9 @@ class MonteCarloTreeSearchNode:
     '''
     expand a node to a child node by using an untried action
     '''
-    action = self._untried_actions.pop()
+    idx = np.random.randint(len(self._untried_actions))
+    action = self._untried_actions[idx]
+    del self._untried_actions[idx]
     next_state = self.state.move(action, self.player)
     next_player = -self.player
     next_node = MonteCarloTreeSearchNode(next_state, self,next_player)
