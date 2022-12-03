@@ -14,47 +14,51 @@ class Puissance4State(MTState):
     '''
     state should be a height x width numpy array where elements are either '1' or '-1' or 0
     '''
-    self.__state = state
+    self.state = state
 
   def __str__(self) -> str:
     map = {1: 'o', -1: 'x', 0: '.'}
     s = ''
     for i in range(height):
       for j in range(width):
-        el = self.__state[i][j]
+        el = self.state[i][j]
         s += map[el] + ' '
       s += '\n'
     return s
 
   def game_result(self) -> Literal[1, -1, 0]:
-    state = self.__state
+    state = self.state
     result = 0
 
     # horizontal check
-    for i in range(target):
-      for j in range(width - target):
-        unique = np.unique([state[i][j+k] for k in range(target)])
+    for i in range(height):
+      for j in range(width - target + 1):
+        arr = [state[i][j+k] for k in range(target)]
+        unique = np.unique(arr)
         if len(unique) == 1 and unique[0] != 0:
           return unique[0]
 
     # vertical check
     for j in range(width):
       for i in range(height - target + 1):
-        unique = np.unique([state[i+k][j] for k in range(4)])
+        arr = [state[i+k][j] for k in range(4)]
+        unique = np.unique(arr)
         if len(unique) == 1 and unique[0] != 0:
           return unique[0]
 
-    # first diagonal check
-    for i in range(height - target):
-      for j in range(width - target):
-        unique = np.unique([state[i+k][j+k] for k in range(target)])
+    # nw-se diagonal check
+    for i in range(height - target + 1):
+      for j in range(width - target + 1):
+        arr = [state[i+k][j+k] for k in range(target)]
+        unique = np.unique(arr)
         if len(unique) == 1 and unique[0] != 0:
           return unique[0]
 
-    # second diagonal check
+    # sw-ne diagonal check
     for i in range(target - 1, height):
-      for j in range(target - 1, width):
-        unique = np.unique([state[i-k][j-k] for k in range(target)])
+      for j in range(0, width - target + 1):
+        arr = [state[i-k][j+k] for k in range(target)]
+        unique = np.unique(arr)
         if len(unique) == 1 and unique[0] != 0:
           return unique[0]
 
@@ -64,7 +68,7 @@ class Puissance4State(MTState):
     return self.game_result() != 0 or len(self.get_legal_actions()) == 0
 
   def move(self, action: list[int, int], player) -> Puissance4State:
-    new_state = self.__state.copy()
+    new_state = self.state.copy()
     new_state[action[0]][action[1]] = player
     return Puissance4State(new_state)
 
@@ -75,14 +79,14 @@ class Puissance4State(MTState):
     res = []
     for i in range(height):
       for j in range(height):
-        if self.__state[i][j] == 0 and (i == height - 1 or self.__state[i+1][j] != 0):
+        if self.state[i][j] == 0 and (i == height - 1 or self.state[i+1][j] != 0):
           res.append((i, j))
     return res
 
   def is_legal_action(self, action: list[int, int]) -> bool:
     row = action[0]
     col = action[1]
-    return self.__state[row][col] == 0 and (row == height - 1 or self.__state[row + 1][col] != 0)
+    return self.state[row][col] == 0 and (row == height - 1 or self.state[row + 1][col] != 0)
 
 
 def main():
